@@ -151,17 +151,42 @@ void average(unsigned char* image, unsigned char* res, int width, int height){
 
 
 void color(unsigned char* image, int width, int height, int eps) {
-    int color1 = rand() % (255 - eps * 2) + eps * 2;
-    int color2 = rand() % (255 - eps * 2) + eps * 2;
-    int color3 = rand() % (255 - eps * 2) + eps * 2;
     for(int y = 1; y < height - 1; y++) {
         for(int x = 1; x < width - 1; x++) {
-            if(image[4 * (y * width + x)] < eps || image[4 * (y * width + x)] > 255-(eps*2)) {
-                fill(image, x, y, color1, color2, color3, eps, width, height);
+		int col1 = rand() % (255 - eps * 2) + eps * 2;
+   		int col2 = rand() % (255 - eps * 2) + eps * 2;
+    		int col3 = rand() % (255 - eps * 2) + eps * 2;
+            	if(image[4 * (y * width + x)] < eps || image[4 * (y * width + x)] > 255-(eps*2)) {
+		    int dx[] = {-1, 0, 1, 0};
+		    int dy[] = {0, 1, 0, -1};
+		
+		    coord* stack = malloc(width * height * 4 * sizeof(coord));
+		    long top = 0;
+		
+		    stack[top++] = (coord){x, y};
+		
+		    while(top > 0) {
+		        coord p = stack[--top];
+		
+		        if(p.x < 0 || p.x >= width || p.y < 0 || p.y >= height) continue;
+		
+		        int ind = (p.y * width + p.x) * 4;
+		        if(image[ind] > eps) continue;
+		
+		        image[ind] = col1;
+		        image[ind + 1] = col2;
+		        image[ind + 2] = col3;
+		
+		        for(int i = 0; i < 4; i++) {
+		            int nx = p.x + dx[i];
+		            int ny = p.y + dy[i];
+		            if(nx > 0 && nx < width && ny > 0 && ny < height) {
+		                stack[top++] = (coord){nx, ny};
+		            }
+		    }
+		    free(stack);
+		}
             }
-            color1 = rand() % (255 - eps * 2) + eps * 2;
-            color2 = rand() % (255 - eps * 2) + eps * 2;
-            color3 = rand() % (255 - eps * 2) + eps * 2;
         }
     }
 }
