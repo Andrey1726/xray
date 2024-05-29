@@ -87,7 +87,7 @@ void bord(unsigned char* image, unsigned w, unsigned h) {
     return ;
 }
 
-void fill(unsigned char* image, int x, int y, int newColor1, int newColor2, int newColor3, int eps, int width, int height) {
+void fill(unsigned char* image, int x, int y, int col1, int col2, int col3, int eps, int width, int height) {
     int dx[] = {-1, 0, 1, 0};
     int dy[] = {0, 1, 0, -1};
 
@@ -104,9 +104,9 @@ void fill(unsigned char* image, int x, int y, int newColor1, int newColor2, int 
         int ind = (p.y * width + p.x) * 4;
         if(image[ind] > eps) continue;
 
-        image[ind] = newColor1;
-        image[ind + 1] = newColor2;
-        image[ind + 2] = newColor3;
+        image[ind] = col1;
+        image[ind + 1] = col2;
+        image[ind + 2] = col3;
 
         for(int i = 0; i < 4; i++) {
             int nx = p.x + dx[i];
@@ -133,9 +133,9 @@ void average(unsigned char* image, unsigned char* res, int width, int height){
             for (int dy = -1; dy <= 1; dy++) {
                 for (int dx = -1; dx <= 1; dx++) {
                     int index = ((y + dy) * width + (x + dx)) * 4;
-                    int gray = (image[index] + image[index + 1] + image[index + 2]) / 3;
-                    sumX += gx[dy + 1][dx + 1] * gray;
-                    sumY += gy[dy + 1][dx + 1] * gray;
+                    int grey = (image[index] + image[index + 1] + image[index + 2]) / 3;
+                    sumX += gx[dy + 1][dx + 1] * grey;
+                    sumY += gy[dy + 1][dx + 1] * grey;
                 }
             }
             unsigned char magnitude = sqrt(sumX * sumX + sumY * sumY);
@@ -150,18 +150,18 @@ void average(unsigned char* image, unsigned char* res, int width, int height){
 }
 
 
-void color(unsigned char* image, int width, int height, int epsilon) {
-    int color1 = rand() % (255 - epsilon * 2) + epsilon * 2;
-    int color2 = rand() % (255 - epsilon * 2) + epsilon * 2;
-    int color3 = rand() % (255 - epsilon * 2) + epsilon * 2;
+void color(unsigned char* image, int width, int height, int eps) {
+    int color1 = rand() % (255 - eps * 2) + eps * 2;
+    int color2 = rand() % (255 - eps * 2) + eps * 2;
+    int color3 = rand() % (255 - eps * 2) + eps * 2;
     for(int y = 1; y < height - 1; y++) {
         for(int x = 1; x < width - 1; x++) {
-            if(image[4 * (y * width + x)] < epsilon || image[4 * (y * width + x)] > 255-(epsilon*2)) {
-                fill(image, x, y, color1, color2, color3, epsilon, width, height);
+            if(image[4 * (y * width + x)] < eps || image[4 * (y * width + x)] > 255-(eps*2)) {
+                fill(image, x, y, color1, color2, color3, eps, width, height);
             }
-            color1 = rand() % (255 - epsilon * 2) + epsilon * 2;
-            color2 = rand() % (255 - epsilon * 2) + epsilon * 2;
-            color3 = rand() % (255 - epsilon * 2) + epsilon * 2;
+            color1 = rand() % (255 - eps * 2) + eps * 2;
+            color2 = rand() % (255 - eps * 2) + eps * 2;
+            color3 = rand() % (255 - eps * 2) + eps * 2;
         }
     }
 }
