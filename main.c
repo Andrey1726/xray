@@ -87,38 +87,6 @@ void bord(unsigned char* image, unsigned w, unsigned h) {
     return ;
 }
 
-void fill(unsigned char* image, int x, int y, int col1, int col2, int col3, int eps, int width, int height) {
-    int dx[] = {-1, 0, 1, 0};
-    int dy[] = {0, 1, 0, -1};
-
-    coord* stack = malloc(width * height * 4 * sizeof(coord));
-    long top = 0;
-
-    stack[top++] = (coord){x, y};
-
-    while(top > 0) {
-        coord p = stack[--top];
-
-        if(p.x < 0 || p.x >= width || p.y < 0 || p.y >= height) continue;
-
-        int ind = (p.y * width + p.x) * 4;
-        if(image[ind] > eps) continue;
-
-        image[ind] = col1;
-        image[ind + 1] = col2;
-        image[ind + 2] = col3;
-
-        for(int i = 0; i < 4; i++) {
-            int nx = p.x + dx[i];
-            int ny = p.y + dy[i];
-            if(nx > 0 && nx < width && ny > 0 && ny < height) {
-                stack[top++] = (coord){nx, ny};
-            }
-        }
-    }
-    free(stack);
-}
-
 void average(unsigned char* image, unsigned char* res, int width, int height){
     int gx[3][3] = {{-1, 0, 1},
                     {-1, 0, 1},
@@ -183,13 +151,13 @@ void color(unsigned char* image, int width, int height, int eps) {
 		            if(nx > 0 && nx < width && ny > 0 && ny < height) {
 		                stack[top++] = (coord){nx, ny};
 		            }
+		    	}
 		    }
 		    free(stack);
 		}
             }
         }
     }
-}
 
 int main() {
 
